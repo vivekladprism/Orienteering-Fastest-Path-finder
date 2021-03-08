@@ -78,7 +78,7 @@ class Terrain
 	}
 }
 
-public class lab1 
+public class Orienteering
 {
 	public static String terrainImageFile;
 	public static String elevationFile;
@@ -118,35 +118,35 @@ public class lab1
 	
 	public static void setTerrainAndSpeeds()
 	{
-		Terrain t = new Terrain("Open land", new Color(248, 148, 18), 14.5);
-		terrainData.put("Open land", t);
-		
-		t = new Terrain("Paved road", new Color(71, 51, 3), 20);
-		terrainData.put("Paved road", t);
-		
-		t = new Terrain("Footpath", new Color(0, 0, 0), 17);
-		terrainData.put("Footpath", t);
-		
-		t = new Terrain("Easy movement forest", new Color(255, 255, 255), 12);
-		terrainData.put("Easy movement forest", t);
-		
-		t = new Terrain("Rough meadow", new Color(255, 192, 0), 9);
-		terrainData.put("Rough meadow", t);
-		
-		t = new Terrain("Slow run forest", new Color(2, 208, 60), 6.5);
-		terrainData.put("Slow run forest", t);
-		
-		t = new Terrain("Walk forest", new Color(2, 136, 40), 4.2);
-		terrainData.put("Walk forest", t);
-		
-		t = new Terrain("Impassible vegetation", new Color(5, 73, 24), 2);
-		terrainData.put("Impassible vegetation", t);
-		
-		t = new Terrain("Lake/Swamp/Marsh", new Color(0, 0, 255), 0.5);
-		terrainData.put("Lake/Swamp/Marsh", t);
-		
-		t = new Terrain("Out of bounds", new Color(205, 0, 101), 0.1);
-		terrainData.put("Out of bounds", t);
+		Terrain terrain = new Terrain("Open land", new Color(248, 148, 18), 14.5);
+		terrainData.put("Open land", terrain);
+
+		terrain = new Terrain("Paved road", new Color(71, 51, 3), 20);
+		terrainData.put("Paved road", terrain);
+
+		terrain = new Terrain("Footpath", new Color(0, 0, 0), 17);
+		terrainData.put("Footpath", terrain);
+
+		terrain = new Terrain("Easy movement forest", new Color(255, 255, 255), 12);
+		terrainData.put("Easy movement forest", terrain);
+
+		terrain = new Terrain("Rough meadow", new Color(255, 192, 0), 9);
+		terrainData.put("Rough meadow", terrain);
+
+		terrain = new Terrain("Slow run forest", new Color(2, 208, 60), 6.5);
+		terrainData.put("Slow run forest", terrain);
+
+		terrain = new Terrain("Walk forest", new Color(2, 136, 40), 4.2);
+		terrainData.put("Walk forest", terrain);
+
+		terrain = new Terrain("Impassible vegetation", new Color(5, 73, 24), 2);
+		terrainData.put("Impassible vegetation", terrain);
+
+		terrain = new Terrain("Lake/Swamp/Marsh", new Color(0, 0, 255), 0.5);
+		terrainData.put("Lake/Swamp/Marsh", terrain);
+
+		terrain = new Terrain("Out of bounds", new Color(205, 0, 101), 0.1);
+		terrainData.put("Out of bounds", terrain);
 			
 	}
 	
@@ -159,7 +159,7 @@ public class lab1
 		{
 			String s[] = br.readLine().trim().split("\\s+");
 			char c = 'a';
-			for(int j = 0 ; j < imageWidth; j ++)
+			for(int col= 0 ; col< imageWidth; col++)
 			{
 				Color color = new Color(bi.getRGB(j, i));
 				
@@ -168,7 +168,7 @@ public class lab1
 				int blue = color.getBlue();
 
 				Terrain terrain = null;
-				Pixel p;
+				Pixel pixel;
 				if(red == 248  && green == 148 && blue == 18)
 				{
 					terrain = terrainData.get("Open land");
@@ -209,10 +209,10 @@ public class lab1
 				{
 					terrain = terrainData.get("Out of bounds");
 				}
-				
-				p = new Pixel(i, j, terrain);
-				pixelLocations.put("(" + i + "," + j + ")", p);
-				p.elevationHeight = Double.parseDouble(s[j]);
+
+				pixel = new Pixel(i, j, terrain);
+				pixelLocations.put("(" + i + "," + col+ ")", pixel);
+				pixel.elevationHeight = Double.parseDouble(s[j]);
 				
 			}
 		}
@@ -220,68 +220,68 @@ public class lab1
 	
 	public static void printPixelData()
 	{
-		for(int i = 0 ; i < imageHeight; i ++)
+		for(int row = 0 ; row < imageHeight; row ++)
 		{
-			for(int j = 0 ; j < imageWidth; j ++)
+			for(int col = 0 ; col < imageWidth; col ++)
 			{
-				System.out.println(pixelLocations.get("(" + i + "," + j + ")"));
+				System.out.println(pixelLocations.get("(" + row + "," + col + ")"));
 			}
 		}
 	}
 	public static void addPixelNeighbours()
 	{
-		for(int i = 0; i < imageHeight;i++)
+		for(int row = 0; row < imageHeight; row++)
 		{
-			for(int j = 0 ; j< imageWidth; j++)
+			for(int col = 0 ; col < imageWidth; col++)
 			{
-				Pixel p = pixelLocations.get("(" + i + "," + j + ")");
+				Pixel pixel = pixelLocations.get("(" + row + "," + col + ")");
 				Pixel neighbour;
 				
-				if (i < imageHeight - 1) 
+				if (row < imageHeight - 1)
 				{
-					neighbour = pixelLocations.get("(" + (i + 1) + "," + j + ")");
+					neighbour = pixelLocations.get("(" + (row + 1) + "," + col + ")");
+					pixel.addNeighbour(neighbour, neighbour.terrain.terrainSpeed);
+
+				}
+				if (row > 0)
+				{
+					neighbour = pixelLocations.get("(" + (row - 1) + "," + col+ ")");
 					p.addNeighbour(neighbour, neighbour.terrain.terrainSpeed);
 
 				}
-				if (i > 0)
+				if (row < imageHeight - 1 && col< imageWidth - 1)
 				{
-					neighbour = pixelLocations.get("(" + (i - 1) + "," + j + ")");
-					p.addNeighbour(neighbour, neighbour.terrain.terrainSpeed);
-
-				}
-				if (i < imageHeight - 1 && j < imageWidth - 1)
-				{
-					neighbour = pixelLocations.get("(" + (i + 1) + "," + (j + 1) + ")");
+					neighbour = pixelLocations.get("(" + (row + 1) + "," + (col+ 1) + ")");
 					p.addNeighbour(neighbour, neighbour.terrain.terrainSpeed);
 				}
 
-				if (i < imageHeight - 1 && j > 0)
+				if (row < imageHeight - 1 && col> 0)
 				{
-					neighbour = pixelLocations.get("(" + (i + 1) + "," + (j - 1) + ")");
+					neighbour = pixelLocations.get("(" + (row + 1) + "," + (col- 1) + ")");
 					p.addNeighbour(neighbour, neighbour.terrain.terrainSpeed);
 				}
 
-				if (j > 0)
+				if (col> 0)
 				{
-					neighbour = pixelLocations.get("(" + i + "," + (j - 1) + ")");
+					neighbour = pixelLocations.get("(" + row + "," + (col- 1) + ")");
 					p.addNeighbour(neighbour, neighbour.terrain.terrainSpeed);
 				}
 
-				if (i > 0 && j < imageWidth - 1)
+				if (row > 0 && col< imageWidth - 1)
 				{
-					neighbour = pixelLocations.get("(" + (i - 1) + "," + (j + 1) + ")");
+					neighbour = pixelLocations.get("(" + (row - 1) + "," + (col+ 1) + ")");
 					p.addNeighbour(neighbour, neighbour.terrain.terrainSpeed);
 				}
 
-				if (i > 0 && j > 0) 
+				if (row > 0 && col> 0)
 				{
-					neighbour = pixelLocations.get("(" + (i - 1) + "," + (j - 1) + ")");
+					neighbour = pixelLocations.get("(" + (row - 1) + "," + (col- 1) + ")");
 					p.addNeighbour(neighbour, neighbour.terrain.terrainSpeed);
 				}
 
-				if (j < imageWidth - 1) 
+				if (col< imageWidth - 1)
 				{
-					neighbour = pixelLocations.get("(" + i + "," + (j + 1) + ")");
+					neighbour = pixelLocations.get("(" + row + "," + (col+ 1) + ")");
 					p.addNeighbour(neighbour, neighbour.terrain.terrainSpeed);
 				}	
 			}
@@ -297,18 +297,18 @@ public class lab1
 		{
 			String[] points = line.trim().split("\\s+");
 			
-			int i =Integer.parseInt(points[0]);
-			int j = Integer.parseInt(points[1]);
+			int row = Integer.parseInt(points[0]);
+			int col = Integer.parseInt(points[1]);
 		
-			pointsToTravel.add(pixelLocations.get("(" + j + "," + i + ")")) ;
+			pointsToTravel.add(pixelLocations.get("(" + col+ "," + row + ")")) ;
 		}
 	}
 	
 	public static void displayPointsToTravel()
 	{
-		for(Pixel p : pointsToTravel)
+		for(Pixel pixel : pointsToTravel)
 		{
-			System.out.println(p.xCord + " " + p.yCord);
+			System.out.println(pixel.xCord + " " + pixel.yCord);
 		}
 	}
 	
@@ -319,11 +319,11 @@ public class lab1
 		System.out.println("take the following path");
 		Pixel startingPoint = pointsToTravel.get(0);
 		
-		for(int i = 1; i < pointsToTravel.size(); i ++)
+		for(int point = 1; point < pointsToTravel.size(); point ++)
 		{
 			
 			Map<Pixel, Pixel> map;
-			Pixel nextPoint = pointsToTravel.get(i);
+			Pixel nextPoint = pointsToTravel.get(point);
 			
 			if(nextPoint.terrain.terrainName.equals("Out of bounds"))
 				continue;
@@ -511,25 +511,25 @@ public class lab1
 	{
 		Set<Pixel> waterEdges = new HashSet<>();
 		Set<Pixel> waterBody = new HashSet<>();
-		for(int i = 1; i< imageHeight - 1 ; i ++)
+		for(int row = 1; row < imageHeight - 1 ; row ++)
 		{
-			for(int j = 1; j < imageWidth - 1; j ++)
+			for(int col= 1; col< imageWidth - 1; col++)
 			{
 				Pixel p = pixelLocations.get("(" + (i) + "," + (j) + ")");
 				if ( p.terrain.terrainName.equals("Lake/Swamp/Marsh"))
 					waterBody.add(p);
 				else continue;
 				Pixel q;
-				q = pixelLocations.get("(" + (i + 1) + "," + (j) + ")");
+				q = pixelLocations.get("(" + (row + 1) + "," + (j) + ")");
 				if ( !q.terrain.terrainName.equals("Lake/Swamp/Marsh"))
 					waterEdges.add(p);
-				q = pixelLocations.get("(" + (i - 1) + "," + (j) + ")");
+				q = pixelLocations.get("(" + (row - 1) + "," + (j) + ")");
 				if ( !q.terrain.terrainName.equals("Lake/Swamp/Marsh"))
 					waterEdges.add(p);
-				q = pixelLocations.get("(" + (i) + "," + (j + 1) + ")");
+				q = pixelLocations.get("(" + (i) + "," + (col+ 1) + ")");
 				if ( !q.terrain.terrainName.equals("Lake/Swamp/Marsh"))
 					waterEdges.add(p);
-				q = pixelLocations.get("(" + (i) + "," + (j - 1) + ")");
+				q = pixelLocations.get("(" + (i) + "," + (col- 1) + ")");
 				if ( !q.terrain.terrainName.equals("Lake/Swamp/Marsh"))
 					waterEdges.add(p);
 			}
@@ -583,7 +583,7 @@ public class lab1
 		Set<Pixel> waterBody = new HashSet<>();
 		for(int i = 1; i < imageHeight - 1 ; i++)
 		{
-			for(int j = 1; j < imageWidth - 1; j++)
+			for(int col= 1; col< imageWidth - 1; j++)
 			{
 				Pixel p = pixelLocations.get("(" + (i) + "," + (j) + ")");
 				if ( p.terrain.terrainName.equals("Lake/Swamp/Marsh"))
@@ -596,10 +596,10 @@ public class lab1
 				q = pixelLocations.get("(" + (i - 1) + "," + (j) + ")");
 				if ( !q.terrain.terrainName.equals("Lake/Swamp/Marsh"))
 					waterEdges.add(p);
-				q = pixelLocations.get("(" + (i) + "," + (j + 1) + ")");
+				q = pixelLocations.get("(" + (i) + "," + (col+ 1) + ")");
 				if ( !q.terrain.terrainName.equals("Lake/Swamp/Marsh"))
 					waterEdges.add(p);
-				q = pixelLocations.get("(" + (i) + "," + (j - 1) + ")");
+				q = pixelLocations.get("(" + (i) + "," + (col- 1) + ")");
 				if ( !q.terrain.terrainName.equals("Lake/Swamp/Marsh"))
 					waterEdges.add(p);
 			}
